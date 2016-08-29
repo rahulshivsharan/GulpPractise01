@@ -1,0 +1,24 @@
+{
+  "name": "gulp-book",
+  "version": "1.0.0",
+  "description": "learning gulp",
+  "main": "gulpfile.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Rahul Shivsharan",
+  "license": "ISC",
+  "devDependencies": {
+    "bootstrap": "^3.3.7",
+    "browser-sync": "^2.14.0",
+    "browserify": "^13.1.0",
+    "connect": "^3.4.1",
+    "gulp": "^3.9.1",
+    "gulp-concat": "^2.6.0",
+    "gulp-inject": "^4.1.0",
+    "gulp-uglify": "^2.0.0",
+    "jquery": "^3.1.0",
+    "serve-static": "^1.11.1",
+    "vinyl-source-stream": "^1.1.0"
+  }
+}

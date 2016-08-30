@@ -9,10 +9,14 @@ var browserify = require("browserify");
 var source = require("vinyl-source-stream");
 var inject = require("gulp-inject");
 
+// copies jQuery js from 'node_modules'
+// to dist folder 
 gulp.task("jquery",function(){
 	return gulp.src("node_modules/jquery/dist/*.min.js").pipe(gulp.dest("dist/node_modules/jquery/dist/"));					
 });
 
+// copies Bootstrap js and css from 'node_modules'
+// to dist folder
 gulp.task("bootstrap",function(){
 	console.log("bootstrap task");	
 	var sources = ["node_modules/bootstrap/dist/**/*.min.css",
@@ -20,9 +24,9 @@ gulp.task("bootstrap",function(){
 	return gulp.src(sources).pipe(gulp.dest("dist/node_modules/bootstrap/dist/"));					
 });
 
-gulp.task("dependencies",["jquery","bootstrap"]);
+gulp.task("dependencies",["jquery","bootstrap"]); // task depedencies is mapped to the depedent lib
 
-
+// task to inject dependencies in html
 gulp.task("index",function(){
 	var target = gulp.src("app/index.html");
 	var dependencies = ["node_modules/jquery/**/*.min.js",
@@ -34,26 +38,27 @@ gulp.task("index",function(){
 });
 
 
-
+// to concat all css files
 gulp.task("styles",function(){
 	console.log("style task");
 	return gulp.src("app/css/*.css").pipe(concat("all.css")).pipe(gulp.dest("dist/"));
 });
 
-
+// to concat all js files
 gulp.task("scripts",function(){
 	console.log("scripts task");
 	return gulp.src("app/js/*.js").pipe(concat("all.js")).pipe(uglify()).pipe(gulp.dest("dist/"));
 });
 
-
+// to browser sync 
 gulp.task("watch",function(){
 	console.log("watch task");
-	gulp.watch("css/*.css",["styles","browsersync.reload"]);
-	gulp.watch("js/*.js",["scripts","browsersync.reload"]);
+	gulp.watch("css/*.css",["styles",browsersync.reload]);
+	gulp.watch("js/*.js",["scripts",browsersync.reload]);
+	gulp.watch("**/*.html",["index",browsersync.reload]);
 });
 
-
+// to start server
 gulp.task("server",function(){
 	console.log("server task");
 	return 	connect().
@@ -64,6 +69,7 @@ gulp.task("server",function(){
 			});
 });
 
+// to browser sync the changes
 gulp.task("browsersync",function(cb){
 	return browsersync({
 		server : {
@@ -79,4 +85,4 @@ gulp.task("browserify",function(){
 			pipe(gulp.dest("dist"));
 });
 
-gulp.task("default",["styles","scripts","index","dependencies","watch","server"]);
+gulp.task("default",["styles","scripts","dependencies","index","watch","server"]);

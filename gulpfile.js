@@ -18,44 +18,80 @@ gulp.task("jquery",function(){
 // copies Bootstrap js and css from 'node_modules'
 // to dist folder
 gulp.task("bootstrap",function(){
-	console.log("bootstrap task");	
+	//console.log("bootstrap task");	
 	var sources = ["node_modules/bootstrap/dist/**/*.min.css",
 					"node_modules/bootstrap/dist/**/*.min.js"];
 	return gulp.src(sources).pipe(gulp.dest("dist/node_modules/bootstrap/dist/"));					
 });
 
-gulp.task("dependencies",["jquery","bootstrap"]); // task depedencies is mapped to the depedent lib
-
-// task to inject dependencies in html
-gulp.task("index",function(){
-	var target = gulp.src("app/index.html");
-	var dependencies = ["node_modules/jquery/**/*.min.js",
-						"node_modules/bootstrap/dist/**/*.min.css",
-						"node_modules/bootstrap/dist/**/*.min.js"];
-	var sources = gulp.src(dependencies,{read : false});
-
-	return target.pipe(inject(sources)).pipe(gulp.dest("dist"));
+gulp.task("angular",function(){
+	//console.log("angular task");	
+	var sources = ["node_modules/angular/*.min.js"];
+	return gulp.src(sources).pipe(gulp.dest("dist/node_modules/angular/"));					
 });
 
+gulp.task("angular-route",function(){
+	//console.log("angular-route task");	
+	var sources = ["node_modules/angular-route/*.min.js"];
+	return gulp.src(sources).pipe(gulp.dest("dist/node_modules/angular-route/"));					
+});
+
+gulp.task("allJS",function(){
+	console.log("Cope all.js task");
+	return gulp.src("js/all.js").pipe(gulp.dest("dist/js/"));					
+});
+
+gulp.task("allCSS",function(){
+	return gulp.src("css/all.css").pipe(gulp.dest("dist/css/"));					
+});
+
+gulp.task("dependencies",[	"angular",
+							"angular-route",
+							"jquery","bootstrap",
+							"allJS",
+							"allCSS"]); // task depedencies is mapped to the dependent lib
+
+// task to inject dependencies in primary html
+gulp.task("primarySPA",function(){
+	var target = gulp.src("app/primaryPages/*.html");
+	var dependencies = ["node_modules/jquery/**/*.min.js",
+						"node_modules/bootstrap/dist/**/*.min.css",
+						"node_modules/bootstrap/dist/**/*.min.js",
+						"node_modules/angular/angular.min.js",
+						"node_modules/angular-route/angular-route.min.js",
+						"js/all.js",
+						"css/all.css"];
+	var sources = gulp.src(dependencies,{read : false});
+
+	return target.pipe(inject(sources)).pipe(gulp.dest("dist/primaryPages/"));
+});
+
+gulp.task("routePages",function(){
+	var target = gulp.src("app/secondaryPages/*.html");
+	return target.pipe(gulp.dest("dist/secondaryPages/"));
+});
+
+gulp.task("htmls",["primarySPA","routePages"]);
 
 // to concat all css files
 gulp.task("styles",function(){
 	console.log("style task");
-	return gulp.src("app/css/*.css").pipe(concat("all.css")).pipe(gulp.dest("dist/"));
+	return gulp.src("css/*.css").pipe(concat("all.css")).pipe(gulp.dest("css/"));
 });
 
 // to concat all js files
 gulp.task("scripts",function(){
 	console.log("scripts task");
-	return gulp.src("app/js/*.js").pipe(concat("all.js")).pipe(uglify()).pipe(gulp.dest("dist/"));
+	var sources = ["js/main.js","js/secondary.js"] 
+	return gulp.src(sources).pipe(concat("all.js")).pipe(uglify()).pipe(gulp.dest("js/"));
 });
 
 // to browser sync 
 gulp.task("watch",function(){
 	console.log("watch task");
-	gulp.watch("css/*.css",["styles",browsersync.reload]);
-	gulp.watch("js/*.js",["scripts",browsersync.reload]);
-	gulp.watch("**/*.html",["index",browsersync.reload]);
+	gulp.watch("css/*.css",["styles","allCSS",browsersync.reload]);
+	gulp.watch("js/*.js",["scripts","allJS",browsersync.reload]);
+	gulp.watch("**/*.html",["htmls",browsersync.reload]);
 });
 
 // to start server
@@ -85,4 +121,4 @@ gulp.task("browserify",function(){
 			pipe(gulp.dest("dist"));
 });
 
-gulp.task("default",["styles","scripts","dependencies","index","watch","server"]);
+gulp.task("default",["styles","scripts","dependencies","htmls","watch","server"]);

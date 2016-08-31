@@ -9,3 +9,8 @@
 	--black: #000000;
 }
 body {font:300 16px sans-serif; background:var(--grey);}
+
+
+.intro{
+	font-size: 500%;
+	font-weight: bold;

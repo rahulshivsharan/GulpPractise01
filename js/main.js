@@ -13,7 +13,8 @@ function param(){
 	var map = {
 		1 : "intro",
 		2 : "churchil",
-		3 : "lincoln"
+		3 : "lincoln",
+		4 : "gandhi"
 	}
 	return {
 		pageName : 0,
@@ -37,7 +38,7 @@ function myctrl($scope,$location,paramService){
 
 	function load(){
 		//console.log(" Load New Page "+paramService.pageName);
-		if(paramService.pageName >= 3){
+		if(paramService.pageName >= 4){
 			paramService.pageName = 1;
 		}else{
 			paramService.pageName++;
